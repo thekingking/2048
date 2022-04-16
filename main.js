@@ -1,4 +1,4 @@
-const data = {
+let data = {
     score: 0,
     best: 0,
     cells: [
@@ -101,10 +101,9 @@ class View {
         this.failureContainer.classList.remove('action');
     }
 
-    updateScore(score, add) {
+    updateScore(score) {
         // 更新分数
         this.score.innerText = score;
-        this.addScoreAnimation(add);
     }
 
     addScoreAnimation(add) {
@@ -223,10 +222,14 @@ class Game {
     }
 
     init() {
-        // 初始化cell
-        this.initCell();
-        // 初始化随机两个元素
-        this.start();
+        if (this.getHistory()) {
+            this.restoreHistory();
+        } else {
+            // 初始化cell
+            this.initCell();
+            // 初始化随机两个元素
+            this.start();
+        }
     }
 
     initCell() {
@@ -245,12 +248,53 @@ class Game {
     }
 
     restart() {
-        this.view.clear();  // 清空所有tile
-        this.score = 0;  // 重置分数
-        this.over = false; // 重置游戏状态
-        this.initCell();  // 重置所有元素属性
+        this.clear(); // 清空所有游戏数据
+        this.initCell();  // 初始化元素属性
         this.view.setup();  // 清除胜利或失败图标
         this.start();  // 重新生成tile
+    }
+
+    clear() {
+        // 清空原有的游戏数据
+        this.view.clear();  // 清空所有tile
+        this.clearHistory();  // 清空游戏数据
+        this.score = 0;  // 重置分数
+        this.cells = data.cells;  // 重新获取元素
+        this.over = false; // 重置游戏状态
+    }
+
+    getHistory() {
+        // 获取本地存储的数据，初始化数据
+        let mes = JSON.parse(localStorage.getItem("data"));
+        // 判断是否存在本地存储数据
+        if (mes) {
+            data = mes;
+            this.score = data.score;
+            this.best = data.best;
+            this.cells = data.cells;
+            // 判断是否存储元素信息
+            if (this.cells.length) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    restoreHistory() {
+        this.view.updateScore(this.score);
+        this.view.updateBest(this.best);
+        this.cells.forEach(item => {
+            if (item.val > 0) {
+                this.view.addCell(item.index);
+            }
+        })
+    }
+
+    clearHistory() {
+        // 清空除best外的数据信息
+        data.cells = [];
+        data.score = 0;
+        localStorage.setItem("data", JSON.stringify(data));
     }
 
     random(start, end) {
@@ -273,7 +317,8 @@ class Game {
         this.cells[index].val = val;
         this.score += 2;
         this.view.addCell(index);
-        this.view.updateScore(this.score, 2);
+        this.view.updateScore(this.score);
+        this.view.addScoreAnimation(2);
         this.checkBest();
     }
 
@@ -306,19 +351,30 @@ class Game {
         // 元素移动
         newCells.forEach((item, index) => {
             this.moving(item, cellsIndex[key][index]);
-        })
+        });
 
         if (this.isFull()) {
             if (this.checkWinning()) {
                 this.over = true;
                 this.view.winning();
+                this.clearHistory();
             } else if (this.checkFailure()) {
                 this.over = true;
                 this.view.failure();
+                this.clearHistory();
             }
         } else {
             this.randomAddItem();
+            // 存储数据
+            this.save();
         }
+    }
+
+    save() {
+        // 本地存储数据
+        data.score = this.score;
+        data.best = this.best;
+        localStorage.setItem("data", JSON.stringify(data));
     }
 
     checkWinning() {
