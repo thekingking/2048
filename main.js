@@ -71,7 +71,8 @@ class View {
         this.tileContainer = document.getElementById('tile-container');
     }
 
-    addCell(index, score) {
+    addCell(index) {
+        // 向视图中添加tile
         let pos = this.getPos(this.getIndexPos(index));
         let tile = {
             pos,
@@ -84,11 +85,24 @@ class View {
     }
 
     removeCell(index) {
+        // 从视图中删除tile
         let tile = this.getTile(index);
         this.tileContainer.removeChild(tile);
     }
 
+    clear() {
+        // 清空所有元素
+        this.tileContainer.innerHTML = '';
+    }
+
+    setup() {
+        // 移除winning图标和failure图标
+        this.winningContainer.classList.remove('action');
+        this.failureContainer.classList.remove('action');
+    }
+
     updateScore(score, add) {
+        // 更新分数
         this.score.innerText = score;
         this.addScoreAnimation(add);
     }
@@ -104,10 +118,12 @@ class View {
     }
 
     updateBest(score) {
+        // 更新最高分
         this.bestScore.innerText = score;
     }
 
     createTileHtml(tile) {
+        // 创建tile元素
         let newTile = document.createElement('div');
         newTile.innerText = tile.val;
         tile.classList.forEach(item => newTile.classList.add(item));
@@ -118,6 +134,7 @@ class View {
     }
 
     getIndexPos(index) {
+        // 返回元素对应表格中的坐标
         return {
             x: Math.floor(index / 4) + 1,
             y: index % 4 + 1
@@ -125,6 +142,7 @@ class View {
     }
 
     getPos(index) {
+        // 获取对应坐标的grid-cell的偏移量
         let gridCell = document.querySelector(`.grid-container .grid-row:nth-child(${index.x}) .grid-cell:nth-child(${index.y})`);
         return {
             top: gridCell.offsetTop,
@@ -133,30 +151,40 @@ class View {
     }
     
     setPos(elem, pos) {
+        // 设置传入元素的left和top
         elem.style.left = pos.left + 'px';
         elem.style.top = pos.top + 'px';
     }
 
     move(old_index, new_index) {
+        // 将old_index位置的tile移动到new_index位置上
         let tile = this.getTile(old_index);
         let pos = this.getPos(this.getIndexPos(new_index));
         this.setInfo(tile, pos, new_index);
     }
 
     getTile(index) {
+        // 获取对应index的元素
         return document.querySelector(`.tile[data-index='${index}']`);
     }
 
     setInfo(elem, pos, index) {
+        // 设置tile的属性
         elem.style.left = pos.left + 'px';
         elem.style.top = pos.top + 'px';
         elem.setAttribute("data-index", index);
     }
 
     updateVal(index, val) {
+        // 更新数值
         let tile = this.getTile(index);
         tile.setAttribute("data-val", val);
         tile.innerText = val;
+    }
+
+    moveTileAnimation(index) {
+        // 添加tile移动的动画
+        let tile = this.getTile(index);
         tile.classList.add('move');
         setTimeout(() => {
             tile.classList.remove('move');
@@ -165,10 +193,12 @@ class View {
     }
 
     winning() {
+        // 添加胜利动画
         this.winningContainer.classList.add('action');
     }
 
     failure() {
+        // 添加失败动画
         this.failureContainer.classList.add('action');
     }
 }
@@ -191,10 +221,10 @@ class Game {
 
     initCell() {
         for (let i = 0; i < 16; i++) {
-            this.cells.push({
+            this.cells[i] = {
                 val: 0,
                 index: i
-            });
+            };
         }
     }
 
@@ -205,7 +235,12 @@ class Game {
     }
 
     restart() {
-        
+        this.view.clear();  // 清空所有tile
+        this.score = 0;  // 重置分数
+        this.over = false; // 重置游戏状态
+        this.initCell();  // 重置所有元素属性
+        this.view.setup();  // 清除胜利或失败图标
+        this.start();  // 重新生成tile
     }
 
     random(start, end) {
@@ -224,6 +259,7 @@ class Game {
     }
 
     addItem(index, val) {
+        // 添加tile
         this.cells[index].val = val;
         this.score += 2;
         this.view.addCell(index);
@@ -232,6 +268,7 @@ class Game {
     }
 
     checkBest() {
+        // 检测分数是否到达最高分，若是则更新
         if (this.score > this.best) {
             this.best = this.score;
             this.view.updateBest(this.best);
@@ -298,6 +335,7 @@ class Game {
     }
 
     chunkX() {
+        // 横向移动
         let newCells = [];
         this.cells.forEach((_, index, array) => {
             if (index % 4 == 0) {
@@ -308,6 +346,7 @@ class Game {
     }
 
     chunkY() {
+        // 纵向移动
         let arr = this.chunkX();
         let newCells = [
             [],
@@ -324,7 +363,8 @@ class Game {
     }
 
     moving(arr, index) {
-        let cells = arr.filter(item => item.val > 0);
+        let cells = arr.filter(item => item.val > 0);  // 过滤出将要移动的tile
+
         if (cells.length == 1) {  // 一行或一列中只有一个元素
             this.normalMove(cells, index);
         } else if (cells.length == 2) {
@@ -363,9 +403,10 @@ class Game {
 
     mergeMove(arr, index, num1, num2, num3) {
         // 合并移动，将两个元素合并后移动
-        this.removeItem(arr[num1].index);
-        this.updateItem(arr[num2].index, index[num3]);
-        this.updateVal(index[num3]);
+        this.removeItem(arr[num1].index);  // 删除前一个元素
+        this.updateItem(arr[num2].index, index[num3]);  // 移动后一个元素
+        this.updateVal(index[num3]);  // 更新移动后元素的数值
+        this.view.moveTileAnimation(index[num3]);  // 添加移动的动画
     }
 
     updateVal(index) {
@@ -375,11 +416,13 @@ class Game {
     }
 
     removeItem(index) {
+        // 删除tile
         this.cells[index].val = 0;
         this.view.removeCell(index);
     }
 
     normalMove(arr, index) {
+        // 平滑移动所有元素
         arr.forEach((item, i) => {
             this.updateItem(item.index, index[i]);
         });
@@ -410,7 +453,8 @@ class Game {
 
 function addEvent(game) {
     const key = ['w', 'd', 's', 'a', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
-    let moving = true;
+    let moving = true; // 避免长按重复触发移动事件
+    const restartBtn = document.getElementById('restart-btn');
 
     window.addEventListener("keydown", (event) => {
         if (moving && key.includes(event.key)) {
@@ -421,6 +465,10 @@ function addEvent(game) {
 
     window.addEventListener("keyup", () => {
         moving = true;
+    })
+
+    restartBtn.addEventListener("click", () => {
+        game.restart();
     })
 }
 
