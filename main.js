@@ -201,6 +201,16 @@ class View {
         // 添加失败动画
         this.failureContainer.classList.add('action');
     }
+
+    resize() {
+        // 重绘tile的位置
+        data.cells.forEach((_, index) => {
+            let tile = this.getTile(index);
+            if (!tile) return;
+            let pos = this.getPos(this.getIndexPos(index));
+            this.setPos(tile, pos);
+        });
+    }
 }
 
 class Game {
@@ -455,6 +465,7 @@ function addEvent(game) {
     const key = ['w', 'd', 's', 'a', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
     let moving = true; // 避免长按重复触发移动事件
     const restartBtn = document.getElementById('restart-btn');
+    let id;
 
     window.addEventListener("keydown", (event) => {
         if (moving && key.includes(event.key)) {
@@ -465,10 +476,18 @@ function addEvent(game) {
 
     window.addEventListener("keyup", () => {
         moving = true;
-    })
+    });
 
     restartBtn.addEventListener("click", () => {
         game.restart();
+    });
+
+    window.addEventListener("resize", () => {
+        // 节流
+        clearTimeout(id);
+        id = setTimeout(() => {
+            game.view.resize();
+        }, 10);
     })
 }
 

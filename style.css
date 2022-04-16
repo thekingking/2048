@@ -39,6 +39,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-items: center;
+    align-content: center;
 }
 
 header {
@@ -86,6 +87,7 @@ header {
 .info {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: 10px;
 }
 
@@ -162,7 +164,7 @@ header {
     top: 0;
     width: 420px;
     height: 420px;
-    margin: 16px;
+    margin: 15px;
 }
 
 .tile {
@@ -324,5 +326,66 @@ header {
 
     100% {
         transform: scale(100%);
+    }
+}
+
+
+@media screen and (max-width: 968px) {
+    body {
+        font-size: 15px;
+    }
+
+    .container {
+        width: 280px;
+    }
+
+    .heading>.title {
+        font-size: 50px;
+        line-height: 50px;
+    }
+
+    .score-container {
+        gap: 10px;
+    }
+
+    .score-container,
+    .best-container {
+        width: 60px;
+        padding: 3px 10px;
+        font-size: 18px;
+    }
+
+    .restart-btn {
+        width: 150px;
+        height: 40px;
+        line-height: 40px;
+        padding: 1px 3px;
+        font-size: 18px;
+        overflow: hidden;
+    }
+
+    .game-container {
+        padding: 10px;
+    }
+
+    .grid-container {
+        width: 260px;
+        height: 260px;
+    }
+
+    .tile-container {
+        margin: 10px;
+    }
+
+    .grid-cell,
+    .tile {
+        width: 60px;
+        height: 60px;
+        border-radius: 5px;
+    }
+
+    .tile {
+        font-size: 50px;
+        line-height: 60px;
     }
 }
