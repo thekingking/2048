@@ -1,0 +1,328 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700&display=swap');
+
+:root {
+    --body-color: #776e65;
+    --primary-color: #fff;
+    --second-color: #eee4da;
+    --score-add-color: rgba(119, 110, 101, .9);
+    --tile-color: #f9f6f2;
+
+    --body-background-color: rgba(238, 228, 218, .5);
+    --score-background-color: #bbada0;
+    --restart-btn-background-color: #8f7a66;
+    --game-container-background-color: #bbada0;
+    --grid-cell-background-color: rgba(238, 228, 218, .35);
+    --tile-background-color: #eee4da;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Alegreya Sans', sans-serif;
+    font-size: 18px;
+    color: var(--body-color);
+    background-color: var(--body-background-color);
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.container {
+    position: relative;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+}
+
+.heading {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading>.title {
+    font-size: 74px;
+    line-height: 66px;
+    font-weight: bold;
+}
+
+.scores-container {
+    display: flex;
+    gap: 20px;
+}
+
+.score-container,
+.best-container {
+    position: relative;
+    width: 90px;
+    background-color: var(--score-background-color);
+    color: var(--primary-color);
+    font-size: 25px;
+    font-weight: bold;
+    padding: 3px 18px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.score-container .title,
+.best-container .title {
+    font-size: 13px;
+    color: var(--second-color);
+    margin-top: 8px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.game-info .subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.score-add {
+    position: absolute;
+    font-size: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--body-color);
+    opacity: 0;
+}
+
+.score-add.action {
+    opacity: 1;
+    animation: .5s add;
+}
+
+.restart-btn {
+    background-color: var(--restart-btn-background-color);
+    color: var(--primary-color);
+    height: 50px;
+    width: 160px;
+    margin-left: 20px;
+    line-height: 50px;
+    border-radius: 3px;
+    border: none;
+    outline: none;
+    padding: 0 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.game-container {
+    position: relative;
+    margin-top: 20px;
+    background-color: var(--game-container-background-color);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.grid-container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: center;
+    width: 420px;
+    height: 420px;
+}
+
+.grid-row {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.grid-cell {
+    display: block;
+    width: 95px;
+    height: 95px;
+    border-radius: 10px;
+    background-color: var(--grid-cell-background-color);
+}
+
+.tile-container{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 420px;
+    height: 420px;
+    margin: 16px;
+}
+
+.tile {
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    border-radius: 10px;
+    background-color: var(--tile-background-color);
+    color: #f9f6f2;
+    text-align: center;
+    line-height: 90px;
+    font-size: 60px;
+    font-weight: 600;
+    transition: all .3s;
+}
+
+.tile.new-tile {
+    animation: .5s appear;
+}
+
+.tile.move {
+    animation: .3s move;
+}
+
+.winning-container,
+.failure-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    font-size: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, .4);
+    z-index: 100;
+    transition: .4s all ease;
+}
+
+.winning-container .icon,
+.failure-container .icon {
+    position: absolute;
+    transform: rotate(90deg);
+    top: 20%;
+    font-size: 80px;
+}
+
+.winning-container .symbol,
+.failure-container .symbol {
+    left: 50%;
+}
+
+.winning-container .expression,
+.failure-container .expression {
+    top: 30%;
+    left: 48%;
+}
+
+.winning-container,
+.failure-container {
+    opacity: 0;
+}
+
+.winning-container.action,
+.failure-container.action {
+    opacity: 1;
+}
+
+.tile[data-val="2"],
+.tile[data-val="4"] {
+    color: #776e65;
+}
+
+.tile[data-val="128"],
+.tile[data-val="256"],
+.tile[data-val="512"] {
+    font-size: 45px;
+}
+
+.tile[data-val="1024"],
+.tile[data-val="2048"] {
+    font-size: 33px;
+}
+
+.tile[data-val="4"] {
+    background: #ede0c8;
+}
+
+.tile[data-val="8"] {
+    background: #f2b179;
+}
+
+.tile[data-val="16"] {
+    background: #f59563;
+}
+
+.tile[data-val="32"] {
+    background: #f67c5f;
+}
+
+.tile[data-val="64"] {
+    background: #f65e3b;
+}
+
+.tile[data-val="128"] {
+    background: #edcf72;
+}
+
+.tile[data-val="256"] {
+    background: #edcc61;
+    box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.31746), inset 0 0 0 1px rgba(255, 255, 255, 0.19048);
+}
+
+.tile[data-val="512"] {
+    background: #edc850;
+    box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.39683), inset 0 0 0 1px rgba(255, 255, 255, 0.2381);
+}
+
+.tile[data-val="1024"] {
+    background: #edc53f;
+    box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.47619), inset 0 0 0 1px rgba(255, 255, 255, 0.28571);
+}
+
+.tile[data-val="2048"] {
+    background: #edc22e;
+    box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
+}
+
+@keyframes add {
+    0% {
+        bottom: 0%;
+    }
+
+    100% {
+        bottom: 120%;
+    }
+}
+
+@keyframes appear {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(100%);
+    }
+}
+
+@keyframes move {
+    0% {
+        transform: scale(100%);
+    }
+
+    60% {
+        transform: scale(120%);
+    }
+
+    100% {
+        transform: scale(100%);
+    }
+}

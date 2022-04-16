@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>2048</title>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="heading">
+                <h1 class="title">2048</h1>
+
+                <div class="scores-container">
+                    <div class="score-container">
+                        <p class="title">SCORE</p>
+    
+                        <p class="score" id="score">0</p>
+    
+                        <div class="score-add" id="score-add">+4</div>
+                    </div>
+    
+                    <div class="best-container">
+                        <p class="title">BEST</p>
+    
+                        <p class="best-score" id="best-score">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="game-info">
+                    <h2 class="subtitle">Play 2048 Game Online</h2>
+
+                    <p class="text">每移动一次，分数加2，当所有元素中出现2048时，游戏胜利</p>
+                </div>
+
+                <button class="restart-btn">New Game</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-container">
+                <div class="grid-container">
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                </div>
+
+                <div class="tile-container" id="tile-container">
+                </div>
+
+                <div class="winning-container" id="winning">
+                    <span class="icon symbol">:</span>
+
+                    <span class="icon expression">)</span>
+
+                    <p class="text">WINNING</p>
+                </div>
+
+                <div class="failure-container" id="failure">
+                    <span class="icon symbol">:</span>
+
+                    <span class="icon expression">(</span>
+
+                    <p class="text">FAILURE</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>
