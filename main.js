@@ -517,6 +517,33 @@ class Game {
     }
 }
 
+function addTouchEvent(game) {
+    let startX,
+        startY,
+        endX,
+        endY,
+        offsetX,
+        offsetY;
+    window.addEventListener("touchstart", (event) => {
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+    });
+
+    window.addEventListener("touchend", (event) => {
+        endX = event.changedTouches[0].clientX;
+        endY = event.changedTouches[0].clientY;
+        offsetX = endX - startX;
+        offsetY = endY - startY;
+        if (Math.abs(offsetX) < 10 && Math.abs(offsetY) < 10) {
+            return;
+        } else if (Math.abs(offsetX) >= Math.abs(offsetY)) {
+            game.move(offsetX > 0 ? 'd': 'a');
+        } else {
+            game.move(offsetY > 0 ? 's': 'w');
+        }
+    })
+}
+
 function addEvent(game) {
     const key = ['w', 'd', 's', 'a', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'];
     let moving = true; // 避免长按重复触发移动事件
@@ -544,7 +571,9 @@ function addEvent(game) {
         id = setTimeout(() => {
             game.view.resize();
         }, 10);
-    })
+    });
+
+    addTouchEvent(game);
 }
 
 let main = function() {
